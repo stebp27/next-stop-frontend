@@ -1,0 +1,49 @@
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav__link {
+  color: rgba(18, 18, 18, 0.6);
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background-color: #6366f1;
+  transition: width 0.2s ease;
+}
+
+.nav__link:hover {
+  color: rgb(18, 18, 18);
+}
+
+.nav__link:hover::after {
+  width: 100%;
+}
+
+.nav__button {
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+}
+
+@media screen and (max-width: 544px) {
+  .nav {
+    gap: 12px;
+  }
+
+  .nav__link,
+  .nav__button {
+    font-size: 14px;
+  }
+}

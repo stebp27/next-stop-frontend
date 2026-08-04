@@ -14,3 +14,13 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+# Siguientes pasos
+
+Usar el localstorage con un id de usuario variable que pueda salvarse sus destinos y sus visitados y pueda ser recuperado
+El problema es como gestionar un usuario sin tener un proceso de login
+O se puede hacer uno ficticio justo para poder recuperar los datos correctos
+
+Hacer que en la de Main se vea un lugar de interes
+Hacer el popup
+Hacer login y register

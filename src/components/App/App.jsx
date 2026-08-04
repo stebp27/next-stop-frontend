@@ -1,122 +1,214 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from "react";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import Header from "../Header/Header";
+import Main from "../Main/Main";
+import Destinations from "../Destinations/Destinations";
+import Footer from "../Footer/Footer";
+import Login from "../Login/Login";
+import Register from "../Register/Register";
+import InfoTooltip from "../InfoTooltip/InfoTooltip";
+import AppContext from "../../contexts/AppContext";
+import "./App.css";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { getCountries } from "../../utils/api";
+import Popup from "../Popup/Popup";
+import { register, authorize, verifyToken, logout } from "../../utils/auth";
+import {
+  getSavedCountries,
+  toggleCountryStatus,
+} from "../../utils/savedCountries";
+import NotFound from "../NotFound/NotFound";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [countries, setCountries] = useState([]);
+  const [popup, setPopup] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
+  const [savedCountries, setSavedCountries] = useState([]);
+  const [countriesLoading, setCountriesLoading] = useState(true);
+  const [countriesError, setCountriesError] = useState(null);
+
+  function handleOpenPopup(popup) {
+    setPopup(popup);
+  }
+
+  function handleClosePopup() {
+    setPopup(null);
+  }
+
+  const handleOpenInfoTooltip = (status) => {
+    handleOpenPopup({
+      children: <InfoTooltip status={status} />,
+    });
+  };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    verifyToken()
+      .then((session) => {
+        setToken(session.token);
+        setIsLoggedIn(true);
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      });
+  }, []);
+
+  const handleRegistration = ({ email, password }) => {
+    register(email, password)
+      .then(() => {
+        handleOpenInfoTooltip({
+          isOpen: true,
+          isSuccess: true,
+          message: "Nice! You are now registered.",
+        });
+        navigate("/signin");
+      })
+      .catch((e) => {
+        console.log(e.message);
+        handleOpenInfoTooltip({
+          isOpen: true,
+          isSuccess: false,
+          message: "Ups, something went wrong. Please try again.",
+        });
+        console.error;
+      });
+  };
+
+  const handleLogin = ({ email, password }) => {
+    if (!email || !password) {
+      return;
+    }
+
+    authorize(email, password)
+      .then((res) => {
+        console.log(res);
+        if (res.token) {
+          setToken(res.token);
+          setIsLoggedIn(true);
+
+          verifyToken(res.token)
+            .then(({ data }) => {
+              setIsLoggedIn(true);
+              handleOpenInfoTooltip({
+                isOpen: true,
+                isSuccess: true,
+                message: "Welcome!",
+              });
+              navigate("/");
+            })
+            .catch((e) => {
+              console.error;
+            });
+        }
+      })
+      .catch((e) => {
+        handleOpenInfoTooltip({
+          isOpen: true,
+          isSuccess: false,
+          message: "Ups, something went wrong. Please try again.",
+        });
+        console.error;
+      });
+  };
+
+  const handleLogout = () => {
+    logout();
+    setToken(null);
+    setIsLoggedIn(false);
+    navigate("/signin");
+  };
+
+  useEffect(() => {
+    setCountriesLoading(true);
+    setCountriesError(null);
+
+    getCountries()
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch(() => {
+        setCountriesError(
+          "Sorry, something went wrong with the request. There might be a connection issue or the server may be down. Please try again later.",
+        );
+      })
+      .finally(() => {
+        setCountriesLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setSavedCountries(getSavedCountries());
+    }
+  }, [isLoggedIn]);
+
+  const handleToggleCountryStatus = (alpha3Code, status) => {
+    const updated = toggleCountryStatus(alpha3Code, status);
+    if (updated) setSavedCountries(updated);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <AppContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        savedCountries,
+        handleToggleCountryStatus,
+      }}
+    >
+      <div className="page__content">
+        <Header handleLogout={handleLogout} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Main
+                countriesLoading={countriesLoading}
+                countries={countries}
+                onOpenPopup={handleOpenPopup}
+              />
+            }
+          ></Route>
 
-      <div className="ticks"></div>
+          <Route
+            path="/destinations"
+            element={
+              <ProtectedRoute>
+                <Destinations
+                  countries={countries}
+                  countriesLoading={countriesLoading}
+                  onOpenPopup={handleOpenPopup}
+                />
+              </ProtectedRoute>
+            }
+          ></Route>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Route
+            path="/signup"
+            element={
+              <ProtectedRoute anonymous>
+                <Register handleRegistration={handleRegistration} />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/signin"
+            element={
+              <ProtectedRoute anonymous>
+                <Login handleLogin={handleLogin} />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {popup && <Popup onClose={handleClosePopup}>{popup.children}</Popup>}
+      </div>
+    </AppContext.Provider>
+  );
 }
 
-export default App
+export default App;
