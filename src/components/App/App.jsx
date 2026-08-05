@@ -69,7 +69,6 @@ function App() {
         navigate("/signin");
       })
       .catch((e) => {
-        console.log(e.message);
         handleOpenInfoTooltip({
           isOpen: true,
           isSuccess: false,

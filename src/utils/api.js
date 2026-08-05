@@ -8,7 +8,6 @@ import {
 export function getCountries() {
   const cached = getItem(COUNTRIES_CACHE_KEY, CACHE_EXPIRE_AFTER);
   if (cached) {
-    console.log(cached.length);
     return Promise.resolve(cached);
   }
 
