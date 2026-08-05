@@ -1,15 +1,8 @@
 import "./Header.css";
 import logo from "../../images/logo.svg";
 import Navigation from "../Navigation/Navigation";
-import AppContext from "../../contexts/AppContext";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext } from "react";
 
-function Header({ userLogin, handleLogout }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { setIsLoggedIn } = useContext(AppContext);
-
+function Header({ handleLogout }) {
   return (
     <header className="header">
       <div className="header__container">

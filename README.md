@@ -47,6 +47,8 @@ NextStop is a web application designed for travel enthusiasts to discover new gl
 3. Run the development server:
    npm run dev
 
+Check the deployed version at https://next-stop-frontend-opal.vercel.app/
+
 ---
 
 <a name="español"></a>
@@ -90,3 +92,5 @@ NextStop es una aplicación web diseñada para amantes de los viajes que permite
 
 3. Iniciar el servidor de desarrollo:
    npm run dev
+
+Mira el proyecto desplegado en https://next-stop-frontend-opal.vercel.app/

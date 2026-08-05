@@ -1,11 +1,11 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import AppContext from "../../contexts/AppContext";
 import "./Navigation.css";
 
 function Navigation({ handleLogout }) {
   const location = useLocation();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AppContext);
+  const { isLoggedIn } = useContext(AppContext);
 
   let navLink = "";
   let authLink = "";
@@ -16,16 +16,16 @@ function Navigation({ handleLogout }) {
         Close session
       </button>
     );
-  } else if (location.pathname === "/signup") {
+  } else if (location.pathname === "/signin") {
     authLink = (
-      <Link to="/signin" className="nav__link">
-        Login
+      <Link to="/signup" className="nav__link">
+        Register
       </Link>
     );
   } else {
     authLink = (
-      <Link to="/signup" className="nav__link">
-        Register
+      <Link to="/signin" className="nav__link">
+        Login
       </Link>
     );
   }
