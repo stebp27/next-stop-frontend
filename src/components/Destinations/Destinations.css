@@ -1,0 +1,119 @@
+.cards {
+  font-family: "Inter", Arial, sans-serif;
+  padding: 15px 40px 36px;
+}
+
+.cards__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cards__status {
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.cards__status--error {
+  color: #dc2626;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.cards__show-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.cards__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cards__search {
+  flex: 1;
+  min-width: 200px;
+  padding: 14px 18px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.cards__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cards__filter-btn {
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.8);
+  color: #475569;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cards__filter-btn:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cards__filter-btn--active {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+}
+
+.cards__filter-btn--active:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+}
+
+@media screen and (max-width: 959px) {
+  .cards__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 544px) {
+  .cards__list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .cards__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cards__search {
+    min-width: 0;
+  }
+
+  .cards__filters {
+    justify-content: center;
+  }
+}

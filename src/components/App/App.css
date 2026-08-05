@@ -1,0 +1,9 @@
+.page__content {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  font-family: "Inter", Arial, sans-serif;
+}

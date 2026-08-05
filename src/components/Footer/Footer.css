@@ -1,0 +1,19 @@
+.footer {
+  padding: 24px 40px;
+  margin-top: 20px;
+  text-align: center;
+  border-top: 1px solid rgba(18, 18, 18, 0.08);
+}
+
+.footer__copyright {
+  color: rgba(18, 18, 18, 0.5);
+  font-size: 13px;
+  margin: 0;
+}
+
+@media screen and (max-width: 544px) {
+  .footer {
+    padding: 20px 16px;
+    margin-top: 12px;
+  }
+}
