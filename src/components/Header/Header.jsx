@@ -7,7 +7,7 @@ function Header({ handleLogout }) {
     <header className="header">
       <div className="header__container">
         <div className="header__logo">
-          <img src={logo} alt="" className="header__logo-icon" />
+          <img src={logo} alt="Logo" className="header__logo-icon" />
           <span className="header__logo-text">nextstop</span>
         </div>
         <div>

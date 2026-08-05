@@ -3,8 +3,7 @@ import Card from "../Card/Card";
 import Preloader from "../Preloader/Preloader";
 import AppContext from "../../contexts/AppContext";
 import "./Destinations.css";
-
-const PAGE_SIZE = 3;
+import { PAGE_SIZE } from "../../utils/constants";
 
 function Destinations(props) {
   const { onOpenPopup, countries, countriesLoading, countriesError } = props;

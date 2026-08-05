@@ -1,12 +1,14 @@
 import { getItem, setItem } from "./localStorage";
-
-const COUNTRIES_CACHE_KEY = "countries_list";
-const EXPIRE_AFTER = 1000 * 60 * 60 * 24 * 7; //One Week
-const CAPITALS_CACHE_KEY = "capitals_cache";
+import {
+  COUNTRIES_CACHE_KEY,
+  CACHE_EXPIRE_AFTER,
+  CAPITALS_CACHE_KEY,
+} from "./constants";
 
 export function getCountries() {
-  const cached = getItem(COUNTRIES_CACHE_KEY, EXPIRE_AFTER);
+  const cached = getItem(COUNTRIES_CACHE_KEY, CACHE_EXPIRE_AFTER);
   if (cached) {
+    console.log(cached.length);
     return Promise.resolve(cached);
   }
 
@@ -19,7 +21,7 @@ export function getCountries() {
 }
 
 export const getCapitalData = (capital) => {
-  const allCapitals = getItem(CAPITALS_CACHE_KEY, EXPIRE_AFTER) || {};
+  const allCapitals = getItem(CAPITALS_CACHE_KEY, CACHE_EXPIRE_AFTER) || {};
 
   if (allCapitals[capital]) {
     return Promise.resolve(allCapitals[capital]);

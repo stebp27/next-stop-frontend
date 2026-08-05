@@ -26,6 +26,7 @@ function App() {
   const [savedCountries, setSavedCountries] = useState([]);
   const [countriesLoading, setCountriesLoading] = useState(true);
   const [countriesError, setCountriesError] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   function handleOpenPopup(popup) {
     setPopup(popup);
@@ -45,12 +46,15 @@ function App() {
 
   useEffect(() => {
     verifyToken()
-      .then((session) => {
+      .then(() => {
         setIsLoggedIn(true);
         setSavedCountries(getSavedCountries());
       })
       .catch(() => {
         setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setAuthChecked(true);
       });
   }, []);
 
@@ -141,6 +145,7 @@ function App() {
       value={{
         isLoggedIn,
         setIsLoggedIn,
+        authChecked,
         savedCountries,
         handleToggleCountryStatus,
       }}

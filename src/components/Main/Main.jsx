@@ -1,33 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Card from "../Card/Card";
 import Preloader from "../Preloader/Preloader";
 import "./Main.css";
 import BeachDay from "../../images/beach-day.svg";
+import { ESTIMATED_MAX_COUNTRIES } from "../../utils/constants";
 
 function Main(props) {
   const { onOpenPopup, countries, countriesLoading, countriesError } = props;
-  const [rndCountry, setRndCountry] = useState(null);
 
-  const pickRandomCountry = () => {
-    if (countries.length < 1) return;
+  const [selectedIndex, setSelectedIndex] = useState(() =>
+    Math.floor(Math.random() * ESTIMATED_MAX_COUNTRIES),
+  );
 
-    let rnd = Math.floor(Math.random() * countries.length);
+  const actualIndex =
+    countries && countries.length > 0 ? selectedIndex % countries.length : 0;
 
-    if (countries.length > 1 && countries[rnd] === rndCountry) {
-      rnd = (rnd + 1) % countries.length;
+  const rndCountry =
+    countries && countries.length > 0 ? countries[actualIndex] : null;
+
+  const handlePickNewCountry = () => {
+    if (!countries || countries.length <= 1) return;
+
+    let nextIndex = Math.floor(Math.random() * countries.length);
+
+    if (nextIndex === actualIndex) {
+      nextIndex = (nextIndex + 1) % countries.length;
     }
 
-    setRndCountry(countries[rnd]);
+    setSelectedIndex(nextIndex);
   };
-
-  useEffect(() => {
-    pickRandomCountry();
-  }, [countries]);
 
   return (
     <main className="main">
       <div className="main__intro">
-        <div className="main__tex">
+        <div className="main__text">
           <h1 className="main__title">
             IT'S TIME TO <span className="main__title_accent">DISCOVER</span>
           </h1>
@@ -57,7 +63,10 @@ function Main(props) {
             <Card country={rndCountry} onOpenPopup={onOpenPopup} />
           </div>
           <div className="main__reload">
-            <button className="main__reload-button" onClick={pickRandomCountry}>
+            <button
+              className="main__reload-button"
+              onClick={handlePickNewCountry}
+            >
               Let me check another place
             </button>
           </div>

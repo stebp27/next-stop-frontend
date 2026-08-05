@@ -7,13 +7,13 @@ function Navigation({ handleLogout }) {
   const location = useLocation();
   const { isLoggedIn } = useContext(AppContext);
 
-  let navLink = "";
-  let authLink = "";
+  let navLink;
+  let authLink;
 
   if (isLoggedIn) {
     authLink = (
       <button onClick={handleLogout} className="nav__link nav__button">
-        Close session
+        Logout
       </button>
     );
   } else if (location.pathname === "/signin") {
@@ -46,8 +46,8 @@ function Navigation({ handleLogout }) {
 
   return (
     <div className="nav">
-      <div className="nav__link">{navLink}</div>
-      <div className="nav__link">{authLink}</div>
+      <div className="nav__link-container">{navLink}</div>
+      <div className="nav__link-container">{authLink}</div>
     </div>
   );
 }
