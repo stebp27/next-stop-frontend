@@ -9,7 +9,7 @@ import Register from "../Register/Register";
 import InfoTooltip from "../InfoTooltip/InfoTooltip";
 import AppContext from "../../contexts/AppContext";
 import "./App.css";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { getCountries } from "../../utils/api";
 import Popup from "../Popup/Popup";
 import { register, authorize, verifyToken, logout } from "../../utils/auth";
@@ -23,10 +23,10 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [popup, setPopup] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
   const [savedCountries, setSavedCountries] = useState([]);
   const [countriesLoading, setCountriesLoading] = useState(true);
   const [countriesError, setCountriesError] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   function handleOpenPopup(popup) {
     setPopup(popup);
@@ -46,12 +46,15 @@ function App() {
 
   useEffect(() => {
     verifyToken()
-      .then((session) => {
-        setToken(session.token);
+      .then(() => {
         setIsLoggedIn(true);
+        setSavedCountries(getSavedCountries());
       })
       .catch(() => {
         setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setAuthChecked(true);
       });
   }, []);
 
@@ -72,7 +75,7 @@ function App() {
           isSuccess: false,
           message: "Ups, something went wrong. Please try again.",
         });
-        console.error;
+        console.error(e);
       });
   };
 
@@ -83,14 +86,11 @@ function App() {
 
     authorize(email, password)
       .then((res) => {
-        console.log(res);
         if (res.token) {
-          setToken(res.token);
-          setIsLoggedIn(true);
-
           verifyToken(res.token)
-            .then(({ data }) => {
+            .then(() => {
               setIsLoggedIn(true);
+              setSavedCountries(getSavedCountries());
               handleOpenInfoTooltip({
                 isOpen: true,
                 isSuccess: true,
@@ -99,7 +99,7 @@ function App() {
               navigate("/");
             })
             .catch((e) => {
-              console.error;
+              console.error(e);
             });
         }
       })
@@ -109,21 +109,18 @@ function App() {
           isSuccess: false,
           message: "Ups, something went wrong. Please try again.",
         });
-        console.error;
+        console.error(e);
       });
   };
 
   const handleLogout = () => {
     logout();
-    setToken(null);
     setIsLoggedIn(false);
+    setSavedCountries([]);
     navigate("/signin");
   };
 
   useEffect(() => {
-    setCountriesLoading(true);
-    setCountriesError(null);
-
     getCountries()
       .then((data) => {
         setCountries(data);
@@ -138,12 +135,6 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      setSavedCountries(getSavedCountries());
-    }
-  }, [isLoggedIn]);
-
   const handleToggleCountryStatus = (alpha3Code, status) => {
     const updated = toggleCountryStatus(alpha3Code, status);
     if (updated) setSavedCountries(updated);
@@ -154,6 +145,7 @@ function App() {
       value={{
         isLoggedIn,
         setIsLoggedIn,
+        authChecked,
         savedCountries,
         handleToggleCountryStatus,
       }}
@@ -165,6 +157,7 @@ function App() {
             path="/"
             element={
               <Main
+                countriesError={countriesError}
                 countriesLoading={countriesLoading}
                 countries={countries}
                 onOpenPopup={handleOpenPopup}
@@ -178,6 +171,7 @@ function App() {
               <ProtectedRoute>
                 <Destinations
                   countries={countries}
+                  countriesError={countriesError}
                   countriesLoading={countriesLoading}
                   onOpenPopup={handleOpenPopup}
                 />

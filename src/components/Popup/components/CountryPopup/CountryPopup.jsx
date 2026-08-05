@@ -4,7 +4,8 @@ import "./CountryPopup.css";
 import AppContext from "../../../../contexts/AppContext";
 
 const CountryPopup = ({ country }) => {
-  const { savedCountries, handleToggleCountryStatus } = useContext(AppContext);
+  const { savedCountries, handleToggleCountryStatus, isLoggedIn } =
+    useContext(AppContext);
 
   const {
     name,
@@ -90,23 +91,27 @@ const CountryPopup = ({ country }) => {
         >
           View Map
         </a>
-        <button
-          className="country-popup__btn country-popup__btn--visited"
-          onClick={() =>
-            handleToggleCountryStatus(country.alpha3Code, "visited")
-          }
-        >
-          {status === "visited" ? "✓ Visited" : "Mark as visited"}
-        </button>
+        {isLoggedIn && (
+          <button
+            className="country-popup__btn country-popup__btn--visited"
+            onClick={() =>
+              handleToggleCountryStatus(country.alpha3Code, "visited")
+            }
+          >
+            {status === "visited" ? "✓ Visited" : "Mark as visited"}
+          </button>
+        )}
 
-        <button
-          className="country-popup__btn country-popup__btn--go"
-          onClick={() =>
-            handleToggleCountryStatus(country.alpha3Code, "wanted")
-          }
-        >
-          {status === "wanted" ? "✓ Wanted" : "I want to go"}
-        </button>
+        {isLoggedIn && (
+          <button
+            className="country-popup__btn country-popup__btn--go"
+            onClick={() =>
+              handleToggleCountryStatus(country.alpha3Code, "wanted")
+            }
+          >
+            {status === "wanted" ? "✓ Wanted" : "I want to go"}
+          </button>
+        )}
       </div>
     </div>
   );

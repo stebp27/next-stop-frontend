@@ -3,7 +3,11 @@ import { Navigate } from "react-router-dom";
 import AppContext from "../../contexts/AppContext";
 
 function ProtectedRoute({ children, anonymous = false }) {
-  const { isLoggedIn } = useContext(AppContext);
+  const { isLoggedIn, authChecked } = useContext(AppContext);
+
+  if (!authChecked) {
+    return null;
+  }
 
   if (anonymous && isLoggedIn) {
     return <Navigate to="/" />;

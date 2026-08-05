@@ -1,7 +1,7 @@
-const PREFIX = "nextstop_";
+import { LOCALSTORAGE_PREFIX } from "./constants";
 
 function buildKey(key) {
-  return `${PREFIX}${key}`;
+  return `${LOCALSTORAGE_PREFIX}${key}`;
 }
 
 export function setItem(key, value) {

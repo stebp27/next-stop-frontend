@@ -1,8 +1,5 @@
 import { setItem, getItem, removeItem } from "../utils/localStorage";
-
-const CACHE_EXPIRE = 1000 * 60 * 60 * 24 * 7; // One week
-export const BASE_URL =
-  "https://6a6cf626eb8865c4bf48cae3.mockapi.io/mockapi/v1/users";
+import { BASE_URL, CACHE_EXPIRE_AFTER } from "./constants";
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}`, {
@@ -49,7 +46,7 @@ export const authorize = (email, password) => {
 // exceeded the expiration we set client-side — it is not a real
 // cryptographic verification of the token.
 export const verifyToken = () => {
-  const session = getItem("session", CACHE_EXPIRE);
+  const session = getItem("session", CACHE_EXPIRE_AFTER);
   if (!session) return Promise.reject("No active session");
 
   const user = getItem(`user_data_${session.userId}`);
@@ -63,6 +60,6 @@ export const logout = () => {
 };
 
 export const getLoggedInUserId = () => {
-  const session = getItem("session", CACHE_EXPIRE);
+  const session = getItem("session", CACHE_EXPIRE_AFTER);
   return session?.userId ?? null;
 };

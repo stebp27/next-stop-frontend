@@ -3,8 +3,7 @@ import Card from "../Card/Card";
 import Preloader from "../Preloader/Preloader";
 import AppContext from "../../contexts/AppContext";
 import "./Destinations.css";
-
-const PAGE_SIZE = 3;
+import { PAGE_SIZE } from "../../utils/constants";
 
 function Destinations(props) {
   const { onOpenPopup, countries, countriesLoading, countriesError } = props;
@@ -36,10 +35,6 @@ function Destinations(props) {
   const hasMore = visibleCount < filteredCountries.length;
 
   useEffect(() => {
-    setVisibleCount(PAGE_SIZE); // reset paginazione quando cambia ricerca/filtro
-  }, [searchTerm, statusFilter]);
-
-  useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
@@ -51,6 +46,16 @@ function Destinations(props) {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const handleFilterChange = (value) => {
+    setStatusFilter(value);
+    setVisibleCount(PAGE_SIZE);
+  };
+
   return (
     <section className="cards">
       <div className="cards__controls">
@@ -59,25 +64,25 @@ function Destinations(props) {
           className="cards__search"
           placeholder="Search a country..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => handleSearchChange(e)}
         />
 
         <div className="cards__filters">
           <button
             className={`cards__filter-btn ${statusFilter === "all" ? "cards__filter-btn--active" : ""}`}
-            onClick={() => setStatusFilter("all")}
+            onClick={() => handleFilterChange("all")}
           >
             All
           </button>
           <button
             className={`cards__filter-btn ${statusFilter === "visited" ? "cards__filter-btn--active" : ""}`}
-            onClick={() => setStatusFilter("visited")}
+            onClick={() => handleFilterChange("visited")}
           >
             Visited
           </button>
           <button
             className={`cards__filter-btn ${statusFilter === "wanted" ? "cards__filter-btn--active" : ""}`}
-            onClick={() => setStatusFilter("wanted")}
+            onClick={() => handleFilterChange("wanted")}
           >
             Wanted
           </button>
@@ -104,11 +109,9 @@ function Destinations(props) {
         <>
           <ul className="cards__list">
             {visibleCountries.map((country) => (
-              <Card
-                key={country.alpha3Code}
-                country={country}
-                onOpenPopup={onOpenPopup}
-              />
+              <li key={country.alpha3Code}>
+                <Card country={country} onOpenPopup={onOpenPopup} />
+              </li>
             ))}
           </ul>
 
